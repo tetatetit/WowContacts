@@ -15,9 +15,11 @@ class MainController : public QObject
     Q_OBJECT
 public:
     explicit MainController(QObject *parent = nullptr);
+    ~MainController();
 
 signals:
     void contactsFilter(const QString& filter);
+    void contactsUpdate(const QJsonArray& contacts);
 
 public slots:
     void contactsDownload();
@@ -39,7 +41,7 @@ private:
     QNetworkAccessManager       m_netMgr;
 
     // Storage
-    ContactStorage*             m_pStorage;
+    QThread*                    m_pStorageThread;
 };
 
 #endif // MAINCONTROLLER_H
