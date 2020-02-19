@@ -3,6 +3,7 @@
 
 #include "ui_mainwindow.h"
 
+#include <QApplication>
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 #include <QSqlQueryModel>
@@ -14,8 +15,10 @@ class MainController : public QObject
 {
     Q_OBJECT
 public:
-    explicit MainController(QObject *parent = nullptr);
+    explicit MainController(int argc, char *argv[], QObject *parent = nullptr);
     ~MainController();
+
+    int exec() { return m_app.exec(); }
 
 signals:
     void contactsFilter(const QString& filter);
@@ -30,6 +33,9 @@ public slots:
     void contactsFiltered(const QSqlQuery& q);
 
 private:
+    // App
+    QApplication                m_app;
+
     // UI
     Ui::MainWindow              m_mainUI;
     QMainWindow                 m_mainWnd;

@@ -8,8 +8,9 @@
 #include <QSqlDatabase>
 #include <QThread>
 
-MainController::MainController(QObject *pParent) :
-    QObject(pParent)
+MainController::MainController(int argc, char *argv[], QObject *pParent) :
+    QObject(pParent),
+    m_app(argc, argv)
 {
     // DB connection
     auto db = QSqlDatabase::addDatabase("QSQLITE");
