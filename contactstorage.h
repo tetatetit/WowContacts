@@ -24,7 +24,7 @@ class QJsonArray;
 class ContactStorage : public QObject
 {
     Q_OBJECT
-public:
+public:    
     explicit ContactStorage(const QSqlDatabase& db, const QString& table);
     ~ContactStorage();
 

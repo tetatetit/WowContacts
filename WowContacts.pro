@@ -26,14 +26,16 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-    contactsfetcher.cpp \
     maincontroller.cpp \
-    contactstorage.cpp
+    contactstorage.cpp \
+    contactmodel.cpp \
+    contactfetcher.cpp
 
 HEADERS += \
-    contactsfetcher.h \
     maincontroller.h \
-    contactstorage.h
+    contactstorage.h \
+    contactmodel.h \
+    contactfetcher.h
 
 FORMS += \
         mainwindow.ui

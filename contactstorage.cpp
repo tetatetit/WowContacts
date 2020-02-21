@@ -15,7 +15,7 @@
 #define country "country"
 #define lang "lang"
 #define birth "birth"
-#define group "group"
+#define group "group_"
 #define groupOrder "groupOrder"
 
 // TODO: error handling
@@ -29,14 +29,14 @@ ContactStorage::ContactStorage(const QSqlDatabase& db, const QString& table) :
     q.prepare(QString() +
         "CREATE TABLE IF NOT EXISTS '"+m_table+"' (\n" \
         "  '" user "'        TEXT NOT NULL PRIMARY KEY,\n" \
-        "  '" first "'       TEXT NOT NULL,\n" \
-        "  '" last "'        TEXT NOT NULL,\n" \
-        "  '" sex "'         TEXT NOT NULL,\n" \
-        "  '" country "'     TEXT NOT NULL,\n" \
-        "  '" lang "'        TEXT NOT NULL,\n" \
-        "  '" birth "'       INTEGER NOT NULL,\n" \
-        "  '" group "'       TEXT NOT NULL,\n" \
-        "  '" groupOrder "'  INTEGER NOT NULL\n" \
+        "  '" first "'       TEXT,\n" \
+        "  '" last "'        TEXT,\n" \
+        "  '" sex "'         TEXT,\n" \
+        "  '" country "'     TEXT,\n" \
+        "  '" lang "'        TEXT,\n" \
+        "  '" birth "'       INTEGER,\n" \
+        "  '" group "'       TEXT,\n" \
+        "  '" groupOrder "'  INTEGER\n" \
         ");"
     );
     Q_ASSERT(q.exec());
@@ -65,10 +65,13 @@ QSqlQuery ContactStorage::_query(const QString& filter_)
     // (typlically for Spain), e.g.
     // first: "Maria Rosa"
     // last: "Servantes Garcia"
-    // This is more rare and less used but Google Contacts till handle it
+    // so when filter input is e.g. "Maria Ro" - it will not be found
+    // due words are with first name firld.
+    // This is more rare case and less used but Google Contacts till handle it
     // even when there are different amount of spaces beween words in the field
     // and in filter text
-    // (thought for Chineese and Japanesse athere might be still another story :)
+    // anyway it's definely fully solvable with sqlite3-pcre extension
+    // or otherwise the only solution to go away from sqlite to some custom written
     QSet<QString> filter;
     {
         auto list = filter_.split(" ", QString::SkipEmptyParts);
@@ -77,7 +80,7 @@ QSqlQuery ContactStorage::_query(const QString& filter_)
         }
     }
     QString s =
-        " SELECT " first ", " last " " \
+        " SELECT " first ", " last ", " group ", " groupOrder " "\
         "   FROM ";s += m_table;
     auto wordCount = filter.size();
     if(wordCount) {
@@ -118,6 +121,12 @@ QSqlQuery ContactStorage::_query(const QString& filter_)
 
 void ContactStorage::_update(const QJsonArray& contacts)
 {
+    // TODO: more clear decision need to be made and implemented
+    //       whether to clear table before upading and then just insert
+    //       all contacts from scratch or to keep current approach assuming
+    //       that only new and updated contacts are provided in above
+    //       source `contacts` list
+    // TODO: Perform validation when adding
     QSqlQuery q(m_db);
 
     // Without this - executing lot of insert/update queries in batch - works extremely slower

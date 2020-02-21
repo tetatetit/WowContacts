@@ -1,6 +1,6 @@
 #include "maincontroller.h"
 
-#include "contactsfetcher.h"
+#include "contactfetcher.h"
 #include "contactstorage.h"
 
 #include <QNetworkRequest>
@@ -24,10 +24,13 @@ MainController::MainController(int argc, char *argv[], QObject *pParent) :
     connect(m_pStorageThread, &QThread::finished, pStorage, &QObject::deleteLater);
     m_pStorageThread->start();
 
+    // TODO: move all UI initialization/interatction/connection from here
+    //       to separate class just initialized from here and connected with signals
 
-    // UI init
+    // UI init/setup
     m_mainUI.setupUi(&m_mainWnd);
-    m_mainUI.contactList->setModel(&m_contactListModel);
+    m_mainUI.contactList->setModel(&m_contactModel);
+    m_mainUI.contactList->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     // UI <=> Controller
     connect(m_mainUI.actionUpdate, &QAction::triggered, this, &MainController::contactsDownload);
@@ -73,8 +76,8 @@ void MainController::contactsDownload()
 void MainController::contactsDownloading(QNetworkReply* pReply)
 {
     m_mainUI.statusBar->showMessage(tr("Downloading and parsing ..."));
-    ContactsFetcher* pFetcher = new ContactsFetcher(pReply); // self deleted and takes ownership of `reply`
-    connect(pFetcher, &ContactsFetcher::fetched, this, &MainController::contactsDownloaded);
+    ContactFetcher* pFetcher = new ContactFetcher(pReply); // self deleted and takes ownership of `reply`
+    connect(pFetcher, &ContactFetcher::fetched, this, &MainController::contactsDownloaded);
     pFetcher->start();
 }
 
@@ -98,5 +101,5 @@ void MainController::contactsFiltering(const QString& filter)
 
 void MainController::contactsFiltered(const QSqlQuery& q) {
     m_mainUI.statusBar->showMessage(tr("Done"));
-    m_contactListModel.setQuery(q);
+    m_contactModel.setQuery(q);
 }

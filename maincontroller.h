@@ -2,12 +2,15 @@
 #define MAINCONTROLLER_H
 
 #include "ui_mainwindow.h"
+#include "contactmodel.h"
 
 #include <QApplication>
 #include <QMainWindow>
 #include <QNetworkAccessManager>
-#include <QSqlQueryModel>
 #include <QSqlQuery>
+#include <QSqlQueryModel>
+
+// TODO: error handling
 
 class ContactStorage;
 
@@ -41,7 +44,7 @@ private:
     QMainWindow                 m_mainWnd;
 
     // UI model
-    QSqlQueryModel              m_contactListModel;
+    ContactModel                m_contactModel;
 
     // Network
     QNetworkAccessManager       m_netMgr;
