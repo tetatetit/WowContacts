@@ -25,6 +25,7 @@ private:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const final ;
     void fetchMore(const QModelIndex& parent) final override { sourceModel()->fetchMore(parent); _updateMap(); }
     QModelIndex index(int row, int column, const QModelIndex& parent) const final override;
+    Qt::ItemFlags flags(const QModelIndex &index) const;
 
     enum ColN {
         COL_first,
@@ -32,6 +33,9 @@ private:
         COL_VISIBLE_COUNT,
         COL_group = COL_VISIBLE_COUNT,
         COL_order
+    };
+    enum {
+        MAP_IDX_GROUP = -1
     };
 
     QVector<int> m_map;
