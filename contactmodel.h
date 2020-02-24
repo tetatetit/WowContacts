@@ -15,6 +15,16 @@ public:
 
     void setQuery(const QSqlQuery &query);
 
+    enum ColN {
+         COL_avatar,
+         COL_first,
+         COL_last,
+         COL_VISIBLE_COUNT,
+         COL_group = COL_VISIBLE_COUNT,
+         COL_order,
+         COL_sex
+    };
+
 private slots:
     void _updateMap();
 
@@ -25,15 +35,9 @@ private:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const final ;
     void fetchMore(const QModelIndex& parent) final override { sourceModel()->fetchMore(parent); _updateMap(); }
     QModelIndex index(int row, int column, const QModelIndex& parent) const final override;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const final override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const final override;
 
-    enum ColN {
-        COL_first,
-        COL_last,
-        COL_VISIBLE_COUNT,
-        COL_group = COL_VISIBLE_COUNT,
-        COL_order
-    };
     enum {
         MAP_IDX_GROUP = -1
     };

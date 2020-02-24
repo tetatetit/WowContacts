@@ -17,6 +17,7 @@
 #define birth "birth"
 #define group "group_"
 #define groupOrder "groupOrder"
+#define avatar "avatar"
 
 // TODO: error handling
 
@@ -36,7 +37,8 @@ ContactStorage::ContactStorage(const QSqlDatabase& db, const QString& table) :
         "  '" lang "'        TEXT,\n" \
         "  '" birth "'       INTEGER,\n" \
         "  '" group "'       TEXT,\n" \
-        "  '" groupOrder "'  INTEGER\n" \
+        "  '" groupOrder "'  INTEGER,\n" \
+        "  '" avatar "'      BLOB\n" \
         ");"
     );
     Q_ASSERT(q.exec());
@@ -80,7 +82,7 @@ QSqlQuery ContactStorage::_query(const QString& filter_)
         }
     }
     QString s =
-        " SELECT " first ", " last ", " group ", " groupOrder " "\
+        " SELECT " avatar ", " first ", " last ", " group ", " groupOrder ", " sex " "\
         "   FROM ";s += m_table;
     auto wordCount = filter.size();
     if(wordCount) {
@@ -136,7 +138,7 @@ void ContactStorage::_update(const QJsonArray& contacts)
     }
     Q_ASSERT(q.prepare(QString() +
         "INSERT OR REPLACE INTO '"+m_table+"' values (\n" \
-        "  :" user ", :" first ", :" last ", :" sex ", :" country ", :" lang ", :" birth ", :" group ", :" groupOrder "\n" \
+        "  :" user ", :" first ", :" last ", :" sex ", :" country ", :" lang ", :" birth ", :" group ", :" groupOrder ", :" avatar "\n" \
         ");"
     ));
     auto pThread = QThread::currentThread();

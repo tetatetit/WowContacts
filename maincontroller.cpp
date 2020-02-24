@@ -7,6 +7,7 @@
 #include <QNetworkReply>
 #include <QSqlDatabase>
 #include <QThread>
+#include <QHeaderView>
 
 MainController::MainController(int argc, char *argv[], QObject *pParent) :
     QObject(pParent),
@@ -30,7 +31,9 @@ MainController::MainController(int argc, char *argv[], QObject *pParent) :
     // UI init/setup
     m_mainUI.setupUi(&m_mainWnd);
     m_mainUI.contactList->setModel(&m_contactModel);
-    m_mainUI.contactList->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_mainUI.contactList->horizontalHeader()->setSectionResizeMode(ContactModel::COL_avatar, QHeaderView::ResizeToContents);
+    m_mainUI.contactList->horizontalHeader()->setSectionResizeMode(ContactModel::COL_first, QHeaderView::Stretch);
+    m_mainUI.contactList->horizontalHeader()->setSectionResizeMode(ContactModel::COL_last, QHeaderView::Stretch);
 
     // UI <=> Controller
     connect(m_mainUI.actionUpdate, &QAction::triggered, this, &MainController::contactsDownload);

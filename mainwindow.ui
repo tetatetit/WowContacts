@@ -34,29 +34,35 @@
       <property name="showGrid">
        <bool>false</bool>
       </property>
+      <property name="wordWrap">
+       <bool>false</bool>
+      </property>
       <property name="cornerButtonEnabled">
        <bool>false</bool>
       </property>
       <attribute name="horizontalHeaderVisible">
        <bool>false</bool>
       </attribute>
-      <attribute name="horizontalHeaderCascadingSectionResizes">
-       <bool>false</bool>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>36</number>
       </attribute>
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
-      <attribute name="horizontalHeaderStretchLastSection">
-       <bool>false</bool>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>36</number>
       </attribute>
       <attribute name="verticalHeaderVisible">
        <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderDefaultSectionSize">
-       <number>30</number>
+       <number>36</number>
       </attribute>
       <attribute name="verticalHeaderHighlightSections">
        <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>36</number>
       </attribute>
      </widget>
     </item>
