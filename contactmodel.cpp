@@ -1,6 +1,7 @@
 #include "contactmodel.h"
 
 #include <QSize>
+#include <QFont>
 #include <QImage>
 #include <QPainter>
 #include <QSqlQueryModel>
@@ -48,8 +49,13 @@ QVariant ContactModel::data(const QModelIndex &index, int role) const
 
     auto srcRow = m_rowMapToSrc[index.row()];
     if(srcRow == ROW_MAP_TO_SRC_group) { // if group
-        if(role == Qt::DisplayRole && index.column() == COL_first) {// just to display in first column
-            return sourceModel()->data(sourceModel()->index(m_rowMapToSrc[index.row() + 1], ContactStorage::FILTER_COL_group)).toString();
+        if(index.column() == COL_first) {
+            if(role == Qt::DisplayRole) {// just to display in first column
+                return sourceModel()->data(sourceModel()->index(m_rowMapToSrc[index.row() + 1], ContactStorage::FILTER_COL_group)).toString();
+            }
+            else if(role == Qt::FontRole) {
+                return QFont("Roboto", -1, 200);
+            }
         }
         return QVariant();
     }
@@ -59,7 +65,7 @@ QVariant ContactModel::data(const QModelIndex &index, int role) const
             // TODO: check if avatar available in source model (provided by storage, e.g. contact photo)
             //       and return it in that case instead of generated
             return ContactStorage::generateAvatar(
-                        QRect(0, 0, AVATAR_CELL_WIDTH, AVATAR_CELL_HEIGHT),
+                        AVATAR_CELL_SIZE,
                         sourceModel()->data(sourceModel()->index(srcRow, ContactStorage::FILTER_COL_first)).toString(),
                         sourceModel()->data(sourceModel()->index(srcRow, ContactStorage::FILTER_COL_last)).toString(),
                         sourceModel()->data(sourceModel()->index(srcRow, ContactStorage::FILTER_COL_sex)).toString()
@@ -114,7 +120,7 @@ Qt::ItemFlags ContactModel::flags(const QModelIndex &index) const
     }
     auto srcRow = m_rowMapToSrc[index.row()];
     if(srcRow == ROW_MAP_TO_SRC_group) {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsEnabled;
     }
 
     return sourceModel()->flags(createIndex(srcRow, colToSrc(index.column())))

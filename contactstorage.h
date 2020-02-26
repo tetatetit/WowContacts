@@ -2,12 +2,12 @@
 #define CONTACTSTORAGE_H
 
 #include <QObject>
-#include <QImage>
+#include <QPixmap>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
 class QJsonArray;
-class QRect;
+class QSize;
 
 // This class always operates in own dedicated thread
 // communicating with the world only via signals/slots
@@ -25,8 +25,6 @@ class QRect;
 
 struct ContactDetails
 {
-    ContactDetails() = default;
-    ~ContactDetails() = default;
     QString first, last, sex, country, lang;
     time_t birth;
 };
@@ -49,7 +47,7 @@ public:
          FILTER_COL_user
     };
 
-    static QImage generateAvatar(const QRect& rect, const QString& first, const QString& last, const QString& sex);
+    static QPixmap generateAvatar(const QSize& size, const QString& first, const QString& last, const QString& sex);
 
 public slots:
     void filter(const QString& filter);

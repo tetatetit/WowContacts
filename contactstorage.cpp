@@ -194,26 +194,27 @@ void ContactStorage::update(const QJsonArray& contacts)
     emit updated();
 }
 
-QImage ContactStorage::generateAvatar(const QRect& rect, const QString& first, const QString& last, const QString& sex)
+QPixmap ContactStorage::generateAvatar(const QSize& size, const QString& first, const QString& last, const QString& sex)
 {
       QColor fillColor(sex == "FEMALE" ? "#FCD0FC" :
                        sex == "MALE"   ? "#B5E6FF" :
                                          "#E1E8ED");
-      QImage img(rect.size(), QImage::Format_RGB32);
+      QPixmap img(size);
+      img.fill(Qt::transparent);
       QPainter paint;
       const int divX = 32,
                 divY = 32;
       paint.begin(&img);
-      paint.fillRect(rect, "white");
       paint.setBrush(fillColor);
       paint.setPen(fillColor);
-      paint.drawEllipse(rect.x(), rect.y(), rect.width() - 1, rect.height() - 1);
+      paint.drawEllipse(0, 0, size.width() - 1, size.height() - 1);
       paint.setPen("green");
+      paint.setFont(QFont("Roboto", size.height() * 10 / divY));
       if(!first.isEmpty()) {
-          paint.drawText(rect.width() * 8 / divX, rect.height() * 17 / divY, first.left(1).toUpper());
+          paint.drawText(size.width() * 8 / divX, size.height() * 17 / divY, first.left(1).toUpper());
       }
       if(!last.isEmpty()) {
-          paint.drawText(rect.width() * 18 / divX, rect.height() * 21 / divY, last.left(1).toUpper());
+          paint.drawText(size.width() * 18 / divX, size.height() * 21 / divY, last.left(1).toUpper());
       }
       paint.end();
       return img;

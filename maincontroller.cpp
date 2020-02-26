@@ -9,6 +9,7 @@
 #include <QSqlDatabase>
 #include <QThread>
 #include <QHeaderView>
+#include <QDateTime>
 
 MainController::MainController(int argc, char *argv[], QObject *pParent) :
     QObject(pParent),
@@ -114,16 +115,28 @@ void MainController::contactsFiltered(const QSqlQuery& q)
 
 void MainController::contactDetailsShow(const QModelIndex& contactModelIndex)
 {
-    if(!(contactModelIndex.flags() & Qt::ItemIsEnabled))// if group
+    auto user = m_contactModel.getUser(contactModelIndex);
+    if(user.isEmpty()) {
         return;
+    }
     emit contactDetails(m_contactModel.getUser(contactModelIndex));
 }
 
-void MainController::contactDetailsReady(const ContactDetails& details)
+void MainController::contactDetailsReady(const ContactDetails& d)
 {
+    //TODO: set as grid layout resizable together with dialog resized
     Ui_Dialog dlgUI;
     QDialog dlg;
 
     dlgUI.setupUi(&dlg);
+    dlgUI.avatar->setPixmap(ContactStorage::generateAvatar(dlgUI.avatar->size(), d.first, d.last, d.sex));
+    // TODO: set it with regard to current locale
+    //       (i.e. either "first last", or "last first")
+    dlgUI.name->setText(d.first + " " + d.last);
+    dlgUI.sex->setText(d.sex);
+    // TODO: full country and language names from codes
+    dlgUI.country->setText(d.country);
+    dlgUI.lang->setText(d.lang);
+    dlgUI.birth->setText(QDateTime::fromSecsSinceEpoch(d.birth).date().toString(Qt::SystemLocaleLongDate));
     dlg.exec();
 }
