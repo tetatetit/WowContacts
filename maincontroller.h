@@ -9,6 +9,7 @@
 #include <QNetworkAccessManager>
 #include <QSqlQuery>
 #include <QSqlQueryModel>
+#include <QSharedPointer>
 
 // TODO: error handling
 
@@ -26,6 +27,7 @@ public:
 signals:
     void contactsFilter(const QString& filter);
     void contactsUpdate(const QJsonArray& contacts);
+    void contactDetails(const QString& user);
 
 public slots:
     void contactsDownload();
@@ -34,6 +36,8 @@ public slots:
     void contactsUpdated();
     void contactsFiltering(const QString& filter);
     void contactsFiltered(const QSqlQuery& q);
+    void contactDetailsShow(const QModelIndex& contactModelIndex);
+    void contactDetailsReady(const ContactDetails& details);
 
 private:
     // App

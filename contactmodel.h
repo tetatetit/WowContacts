@@ -16,6 +16,7 @@ public:
     ContactModel();
 
     void setQuery(const QSqlQuery &query);
+    QString getUser(const QModelIndex& index) const;
 
     enum ColN
     {

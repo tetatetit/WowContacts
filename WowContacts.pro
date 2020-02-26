@@ -38,7 +38,8 @@ HEADERS += \
     contactfetcher.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    contactdetails.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

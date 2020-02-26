@@ -2,6 +2,7 @@
 
 #include "contactfetcher.h"
 #include "contactstorage.h"
+#include "ui_contactdetails.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -38,12 +39,15 @@ MainController::MainController(int argc, char *argv[], QObject *pParent) :
     // UI <=> Controller
     connect(m_mainUI.actionUpdate, &QAction::triggered, this, &MainController::contactsDownload);
     connect(m_mainUI.contactFilter, &QLineEdit::textEdited, this, &MainController::contactsFiltering);
+    connect(m_mainUI.contactList, &QAbstractItemView::clicked, this, &MainController::contactDetailsShow);
 
     // Storage <=> Controller
     connect(this, &MainController::contactsUpdate, pStorage, &ContactStorage::update);
     connect(pStorage, &ContactStorage::updated, this, &MainController::contactsUpdated);
     connect(this, &MainController::contactsFilter, pStorage, &ContactStorage::filter);
-    connect(pStorage, &ContactStorage::filtered, this, &MainController::contactsFiltered, Qt::BlockingQueuedConnection);
+    connect(pStorage, &ContactStorage::filtered, this, &MainController::contactsFiltered);
+    connect(this, &MainController::contactDetails, pStorage, &ContactStorage::details);
+    connect(pStorage, &ContactStorage::detailsReady, this, &MainController::contactDetailsReady);
 
     // Network <=> Controller
     connect(&m_netMgr, &QNetworkAccessManager::finished, this, &MainController::contactsDownloading);
@@ -102,7 +106,24 @@ void MainController::contactsFiltering(const QString& filter)
     emit contactsFilter(filter);
 }
 
-void MainController::contactsFiltered(const QSqlQuery& q) {
+void MainController::contactsFiltered(const QSqlQuery& q)
+{
     m_mainUI.statusBar->showMessage(tr("Done"));
     m_contactModel.setQuery(q);
+}
+
+void MainController::contactDetailsShow(const QModelIndex& contactModelIndex)
+{
+    if(!(contactModelIndex.flags() & Qt::ItemIsEnabled))// if group
+        return;
+    emit contactDetails(m_contactModel.getUser(contactModelIndex));
+}
+
+void MainController::contactDetailsReady(const ContactDetails& details)
+{
+    Ui_Dialog dlgUI;
+    QDialog dlg;
+
+    dlgUI.setupUi(&dlg);
+    dlg.exec();
 }

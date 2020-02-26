@@ -23,6 +23,15 @@ class QRect;
 // NOTE: Never call slots of this class directly but always via
 // emiting signal connected to it
 
+struct ContactDetails
+{
+    ContactDetails() = default;
+    ~ContactDetails() = default;
+    QString first, last, sex, country, lang;
+    time_t birth;
+};
+Q_DECLARE_METATYPE(ContactDetails);
+
 class ContactStorage : public QObject
 {
     Q_OBJECT
@@ -30,18 +39,14 @@ public:
     explicit ContactStorage(const QSqlDatabase& db, const QString& table);
     ~ContactStorage();
 
-    struct Details
-    {
-        QString first, last, sex, country, lang, birth;
-    };
-
-    enum {
+    enum FilterColumn {
          FILTER_COL_avatar,
          FILTER_COL_first,
          FILTER_COL_last,
          FILTER_COL_group,
          FILTER_COL_order,
-         FILTER_COL_sex
+         FILTER_COL_sex,
+         FILTER_COL_user
     };
 
     static QImage generateAvatar(const QRect& rect, const QString& first, const QString& last, const QString& sex);
@@ -49,19 +54,14 @@ public:
 public slots:
     void filter(const QString& filter);
     void update(const QJsonArray& contacts);
-    void details(const QString& user) { Q_UNUSED(user); }
+    void details(const QString& user);
 
 signals:
-    // Only Qt::BlockingQueuedConnection works with QSqlQuery, otherwise
-    // signal not received
     void filtered(const QSqlQuery& q);
-    void detailsReady();
+    void detailsReady(const ContactDetails& details);
     void updated();
 
 private:
-    QSqlQuery _query(const QString& filter_);
-    void _update(const QJsonArray& contacts);
-
     QSqlDatabase                m_db;
     const QString               m_table;
 };

@@ -67,6 +67,7 @@ QVariant ContactModel::data(const QModelIndex &index, int role) const
         } else if(role == Qt::SizeHintRole) {
             return AVATAR_CELL_SIZE;
         }
+        return QVariant();
     }            
     return sourceModel()->data(createIndex(srcRow, colToSrc(index.column())), role);
 }
@@ -118,6 +119,15 @@ Qt::ItemFlags ContactModel::flags(const QModelIndex &index) const
 
     return sourceModel()->flags(createIndex(srcRow, colToSrc(index.column())))
             | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+}
+
+QString ContactModel::getUser(const QModelIndex& index) const
+{
+    if(!(index.isValid() && isValid(index.row(), index.column()))) {
+        return "";
+    }
+
+    return sourceModel()->data(sourceModel()->index(m_rowMapToSrc[index.row()], ContactStorage::FILTER_COL_user)).toString();
 }
 
 void ContactModel::_updateMap()
