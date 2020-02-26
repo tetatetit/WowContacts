@@ -23,12 +23,12 @@ void ContactModel::setQuery(const QSqlQuery &query)
 
 int ContactModel::rowCount(const QModelIndex&) const
 {
-    return m_map.count();
+    return m_rowMapToSrc.count();
 }
 
 int ContactModel::columnCount(const QModelIndex&) const
 {
-    return COL_VISIBLE_COUNT;
+    return COL_COUNT;
 }
 
 QVariant ContactModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -39,68 +39,84 @@ QVariant ContactModel::headerData(int section, Qt::Orientation orientation, int 
     return sourceModel()->headerData(section, orientation, role);
 }
 
-
-
 QVariant ContactModel::data(const QModelIndex &index, int role) const
 {
-    auto srcRow = m_map[index.row()];
-    if(srcRow == MAP_IDX_GROUP) { // if group row
+    if(!(index.isValid())) {
+        return QVariant();
+    }
+    Q_ASSERT(isValid(index.row(), index.column()));
+
+    auto srcRow = m_rowMapToSrc[index.row()];
+    if(srcRow == ROW_MAP_TO_SRC_group) { // if group
         if(role == Qt::DisplayRole && index.column() == COL_first) {// just to display in first column
-            Q_ASSERT(index.row() < m_map.count());// must exist at least one item if group row inserted
-            return sourceModel()->data(sourceModel()->index(m_map[index.row() + 1], COL_group)).toString();
+            return sourceModel()->data(sourceModel()->index(m_rowMapToSrc[index.row() + 1], ContactStorage::FILTER_COL_group)).toString();
         }
         return QVariant();
     }
 
     if(index.column() == COL_avatar) {
         if(role == Qt::DecorationRole) {
-            QString first = sourceModel()->data(sourceModel()->index(srcRow, COL_first)).toString(),
-                    last = sourceModel()->data(sourceModel()->index(srcRow, COL_last)).toString(),
-                    sex = sourceModel()->data(sourceModel()->index(srcRow, COL_sex)).toString();
-            // TODO: move below drawing of avatar to separate function
-            //       to draw any size avatar as well (not only fixed size)
-            //       by setting sizes and coordinates proportionally
-            //       Since it should be reused in detailed contact view
-            //       with 128x128 avatar size
-            QColor fillColor(sex == "FEMALE" ? "#FCD0FC" :
-                             sex == "MALE"   ? "#B5E6FF" :
-                                               "#E1E8ED");
-            QImage img(AVATAR_CELL_SIZE, QImage::Format_RGB32);
-            QPainter paint;
-            paint.begin(&img);
-            paint.fillRect(0, 0, AVATAR_CELL_WIDTH, AVATAR_CELL_HEIGHT, "white");
-            paint.setBrush(fillColor);
-            paint.setPen(fillColor);
-            paint.drawEllipse(0, 0, AVATAR_CELL_WIDTH - 1, AVATAR_CELL_HEIGHT - 1);
-            paint.setPen("green");
-            if(!first.isEmpty()) {
-                paint.drawText(8, 17, first.left(1).toUpper());
-            }
-            if(!last.isEmpty()) {
-                paint.drawText(18, 21, last.left(1).toUpper());
-            }
-            paint.end();
-            return img;
+            // TODO: check if avatar available in source model (provided by storage, e.g. contact photo)
+            //       and return it in that case instead of generated
+            return ContactStorage::generateAvatar(
+                        QRect(0, 0, AVATAR_CELL_WIDTH, AVATAR_CELL_HEIGHT),
+                        sourceModel()->data(sourceModel()->index(srcRow, ContactStorage::FILTER_COL_first)).toString(),
+                        sourceModel()->data(sourceModel()->index(srcRow, ContactStorage::FILTER_COL_last)).toString(),
+                        sourceModel()->data(sourceModel()->index(srcRow, ContactStorage::FILTER_COL_sex)).toString()
+                        );
         } else if(role == Qt::SizeHintRole) {
             return AVATAR_CELL_SIZE;
         }
-    }
+    }            
+    return sourceModel()->data(createIndex(srcRow, colToSrc(index.column())), role);
+}
 
-    return sourceModel()->data(createIndex(srcRow, index.column()), role);
+bool ContactModel::isValid(int row, int col) const
+{
+    if(col >= 0 && col < COL_COUNT
+        && row >=0 && row < m_rowMapToSrc.count())
+    {
+        Q_ASSERT(m_rowMapToSrc[row] != ROW_MAP_TO_SRC_group
+                    // group must not be empty, i.e. at least one contact row
+                    // must exists after it in the map
+                    || row + 1 < m_rowMapToSrc.count());
+        return true;
+    }
+    return false;
+}
+
+int ContactModel::colToSrc(int col)
+{
+    Q_ASSERT(col < COL_COUNT);
+
+    static const int mapColToSrc[] =
+    {
+        ContactStorage::FILTER_COL_avatar,
+        ContactStorage::FILTER_COL_first,
+        ContactStorage::FILTER_COL_last
+    };
+    static_assert(sizeof(mapColToSrc) / sizeof(*mapColToSrc) == COL_COUNT, "Not all columns mapped");
+    return mapColToSrc[col];
 }
 
 QModelIndex ContactModel::index(int row, int column, const QModelIndex&) const
 {
+    if(!isValid(row, column))
+        return QModelIndex();
     return createIndex(row, column);
 }
 
 Qt::ItemFlags ContactModel::flags(const QModelIndex &index) const
 {
-    if(m_map[index.row()] == MAP_IDX_GROUP) {
+    if(!(index.isValid() && isValid(index.row(), index.column()))) {
+        return Qt::NoItemFlags;
+    }
+    auto srcRow = m_rowMapToSrc[index.row()];
+    if(srcRow == ROW_MAP_TO_SRC_group) {
         return Qt::NoItemFlags;
     }
 
-    return sourceModel()->flags(createIndex(index.row(), index.column()))
+    return sourceModel()->flags(createIndex(srcRow, colToSrc(index.column())))
             | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
@@ -108,17 +124,16 @@ void ContactModel::_updateMap()
 {
     auto    pModel = sourceModel();
     int     rowCount = pModel->rowCount(),
-            prevGroupOrder = MAP_IDX_GROUP;
+            prevGroupOrder = ROW_MAP_TO_SRC_group;
 
-    m_map.clear();
+    m_rowMapToSrc.clear();
     // TODO: incorporate std::upper_bound here for optimization
     for(int rowN = 0; rowN < rowCount; ++ rowN) {
-        auto groupOrder = pModel->data(pModel->index(rowN, COL_order)).toInt();
+        auto groupOrder = pModel->data(pModel->index(rowN, ContactStorage::FILTER_COL_order)).toInt();
         if(groupOrder != prevGroupOrder) {
             prevGroupOrder = groupOrder;
-            m_map.append(MAP_IDX_GROUP);
+            m_rowMapToSrc.append(ROW_MAP_TO_SRC_group);
         }
-        m_map.append(rowN);
+        m_rowMapToSrc.append(rowN);
     }
 }
-

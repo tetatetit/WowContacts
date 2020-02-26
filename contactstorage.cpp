@@ -1,3 +1,4 @@
+
 #include "contactstorage.h"
 
 #include <QSqlDatabase>
@@ -6,7 +7,7 @@
 #include <QDebug>
 #include <QThread>
 #include <QJsonArray>
-#include <QSet>
+#include <QPainter>
 
 #define user "user"
 #define first "first"
@@ -19,7 +20,7 @@
 #define groupOrder "groupOrder"
 #define avatar "avatar"
 
-// TODO: error handling
+// TODO: error handling in whole file
 
 ContactStorage::ContactStorage(const QSqlDatabase& db, const QString& table) :
     m_db(db),
@@ -167,4 +168,29 @@ void ContactStorage::_update(const QJsonArray& contacts)
         qDebug() << q.lastError();
         Q_ASSERT(false);
     }
+}
+
+QImage ContactStorage::generateAvatar(const QRect& rect, const QString& first_, const QString& last_, const QString& sex_)
+{
+      QColor fillColor(sex_ == "FEMALE" ? "#FCD0FC" :
+                       sex_ == "MALE"   ? "#B5E6FF" :
+                                          "#E1E8ED");
+      QImage img(rect.size(), QImage::Format_RGB32);
+      QPainter paint;
+      const int divX = 32,
+                divY = 32;
+      paint.begin(&img);
+      paint.fillRect(rect, "white");
+      paint.setBrush(fillColor);
+      paint.setPen(fillColor);
+      paint.drawEllipse(rect.x(), rect.y(), rect.width() - 1, rect.height() - 1);
+      paint.setPen("green");
+      if(!first_.isEmpty()) {
+          paint.drawText(rect.width() * 8 / divX, rect.height() * 17 / divY, first_.left(1).toUpper());
+      }
+      if(!last_.isEmpty()) {
+          paint.drawText(rect.width() * 18 / divX, rect.height() * 21 / divY, last_.left(1).toUpper());
+      }
+      paint.end();
+      return img;
 }

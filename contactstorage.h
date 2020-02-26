@@ -2,10 +2,12 @@
 #define CONTACTSTORAGE_H
 
 #include <QObject>
+#include <QImage>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
 class QJsonArray;
+class QRect;
 
 // This class always operates in own dedicated thread
 // communicating with the world only via signals/slots
@@ -28,14 +30,32 @@ public:
     explicit ContactStorage(const QSqlDatabase& db, const QString& table);
     ~ContactStorage();
 
+    struct Details
+    {
+        QString first, last, sex, country, lang, birth;
+    };
+
+    enum {
+         FILTER_COL_avatar,
+         FILTER_COL_first,
+         FILTER_COL_last,
+         FILTER_COL_group,
+         FILTER_COL_order,
+         FILTER_COL_sex
+    };
+
+    static QImage generateAvatar(const QRect& rect, const QString& first, const QString& last, const QString& sex);
+
 public slots:
     void filter(const QString& filter);
     void update(const QJsonArray& contacts);
+    void details(const QString& user) { Q_UNUSED(user); }
 
 signals:
     // Only Qt::BlockingQueuedConnection works with QSqlQuery, otherwise
     // signal not received
     void filtered(const QSqlQuery& q);
+    void detailsReady();
     void updated();
 
 private:

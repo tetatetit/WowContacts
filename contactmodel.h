@@ -1,6 +1,8 @@
 #ifndef CONTACTMODEL_H
 #define CONTACTMODEL_H
 
+#include "contactstorage.h"
+
 #include <QIdentityProxyModel>
 #include <QVector>
 
@@ -15,22 +17,21 @@ public:
 
     void setQuery(const QSqlQuery &query);
 
-    enum ColN {
-         COL_avatar,
-         COL_first,
-         COL_last,
-         COL_VISIBLE_COUNT,
-         COL_group = COL_VISIBLE_COUNT,
-         COL_order,
-         COL_sex
+    enum ColN
+    {
+        COL_avatar,
+        COL_first,
+        COL_last,
+        COL_COUNT,
+        COL_INVALID
     };
 
 private slots:
     void _updateMap();
 
 private:
-    int rowCount(const QModelIndex&) const final override;
-    int columnCount(const QModelIndex&) const final override;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const final override;
+    int columnCount(const QModelIndex& parent = QModelIndex()) const final override;
     QModelIndex parent(const QModelIndex&) const final override { return QModelIndex(); }
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const final ;
     void fetchMore(const QModelIndex& parent) final override { sourceModel()->fetchMore(parent); _updateMap(); }
@@ -38,11 +39,15 @@ private:
     Qt::ItemFlags flags(const QModelIndex &index) const final override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const final override;
 
-    enum {
-        MAP_IDX_GROUP = -1
+    bool isValid(int row, int col) const;
+    static int colToSrc(int col);
+
+    enum ROW_MAP_TO_SRC
+    {
+        ROW_MAP_TO_SRC_group = -1,
     };
 
-    QVector<int> m_map;
+    QVector<int> m_rowMapToSrc;
 };
 
 #endif // CONTACTMODEL_H
