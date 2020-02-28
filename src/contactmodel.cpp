@@ -127,13 +127,13 @@ Qt::ItemFlags ContactModel::flags(const QModelIndex &index) const
             | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
-QString ContactModel::getUser(const QModelIndex& index) const
+QString ContactModel::getId(const QModelIndex& index) const
 {
     if(!(index.isValid() && isValid(index.row(), index.column()))) {
         return "";
     }
 
-    return sourceModel()->data(sourceModel()->index(m_rowMapToSrc[index.row()], ContactStorage::FILTER_COL_user)).toString();
+    return sourceModel()->data(sourceModel()->index(m_rowMapToSrc[index.row()], ContactStorage::FILTER_COL_id)).toString();
 }
 
 void ContactModel::_updateMap()

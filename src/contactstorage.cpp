@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <QPainter>
 
+#define C_ID  "id"
 #define C_USER "user"
 #define C_FIRST "first"
 #define C_LAST "last"
@@ -33,12 +34,13 @@ ContactStorage::ContactStorage(const QSqlDatabase& db, const QString& table) :
     Q_ASSERT(m_db.open());
     // to allow them to be passed throught signal/slot
     qRegisterMetaType<ContactDetails>("ContactDetails");
-    qRegisterMetaType<QSqlQuery>("ContactDetails");
+    qRegisterMetaType<QSqlQuery>("QSqlQuery");
 
     QSqlQuery q(m_db);
     q.prepare(QString() +
         "CREATE TABLE IF NOT EXISTS '"+m_table+"' (\n" \
-        "  '" C_USER "'        TEXT NOT NULL PRIMARY KEY,\n" \
+        "  '" C_ID "'          TEXT NOT NULL PRIMARY KEY,\n" \
+        "  '" C_USER "'        TEXT,\n" \
         "  '" C_FIRST "'       TEXT,\n" \
         "  '" C_LAST "'        TEXT,\n" \
         "  '" C_SEX "'         TEXT,\n" \
@@ -46,7 +48,7 @@ ContactStorage::ContactStorage(const QSqlDatabase& db, const QString& table) :
         "  '" C_LANG "'        TEXT,\n" \
         "  '" C_BIRTH "'       INTEGER,\n" \
         "  '" C_GROUP "'       TEXT,\n" \
-        "  '" C_GROUP_ORDER "'  INTEGER,\n" \
+        "  '" C_GROUP_ORDER "' INTEGER,\n" \
         "  '" C_AVATAR "'      BLOB\n" \
         ");"
     );
@@ -82,7 +84,7 @@ void ContactStorage::filter(const QString& filter_)
     // when changing SELECT columns order - make sure to
     // update order in FilterColumn enum appropriately
     QString s =
-        " SELECT " C_AVATAR ", " C_FIRST ", " C_LAST ", " C_GROUP ", " C_GROUP_ORDER ", " C_SEX ", " C_USER " "\
+        " SELECT " C_AVATAR ", " C_FIRST ", " C_LAST ", " C_GROUP ", " C_GROUP_ORDER ", " C_SEX ", " C_ID " "\
         "   FROM ";s += m_table;
     auto wordCount = filter.size();
     if(wordCount) {
@@ -122,16 +124,16 @@ void ContactStorage::filter(const QString& filter_)
     emit filtered(q);
 }
 
-void ContactStorage::details(const QString& user_)
+void ContactStorage::details(const QString& id)
 {
     QSqlQuery q(m_db);
 
     Q_ASSERT(q.prepare(
         "SELECT " C_FIRST ", " C_LAST ", " C_SEX ", " C_COUNTRY ", " C_LANG ", " C_BIRTH \
         "   FROM " + m_table +
-        "   WHERE " C_USER "=?"
+        "   WHERE " C_ID "=?"
     ));
-    q.bindValue(0, user_);
+    q.bindValue(0, id);
     Q_ASSERT(q.exec());
 
     q.first();
@@ -160,14 +162,18 @@ void ContactStorage::update(const QJsonArray& contacts)
         qDebug() << m_db.lastError();
         Q_ASSERT(false);
     }
-    Q_ASSERT(q.prepare(QString() +
+    if(!q.prepare(QString() +
         "INSERT OR REPLACE INTO '"+m_table+"' values (\n" \
-        "  :" C_USER ", :" C_FIRST ", :" C_LAST ", :" C_SEX ", :" C_COUNTRY ", :" C_LANG ", :" C_BIRTH ", :" C_GROUP ", :" C_GROUP_ORDER ", :" C_AVATAR "\n" \
+        "  :" C_ID ", :" C_USER ", :" C_FIRST ", :" C_LAST ", :" C_SEX ", :" C_COUNTRY ", :" C_LANG ", :" C_BIRTH ", :" C_GROUP ", :" C_GROUP_ORDER ", :" C_AVATAR "\n" \
         ");"
-    ));
+    )) {
+        qDebug() << q.lastError();
+        Q_ASSERT(false);
+    }
     auto pThread = QThread::currentThread();
     foreach(auto c, contacts) {
         auto ac = c["account"];
+        q.bindValue(":" C_ID, c["id"]);
         q.bindValue(":" C_USER, ac["username"]);
         q.bindValue(":" C_FIRST, ac["firstName"]);
         q.bindValue(":" C_LAST, ac["lastName"]);

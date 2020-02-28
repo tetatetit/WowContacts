@@ -44,7 +44,7 @@ public:
          FILTER_COL_group,
          FILTER_COL_order,
          FILTER_COL_sex,
-         FILTER_COL_user
+         FILTER_COL_id
     };
 
     static QPixmap generateAvatar(const QSize& size, const QString& first, const QString& last, const QString& sex);
@@ -52,7 +52,7 @@ public:
 public slots:
     void filter(const QString& filter);
     void update(const QJsonArray& contacts);
-    void details(const QString& user);
+    void details(const QString& id);
 
 signals:
     void filtered(const QSqlQuery& q);

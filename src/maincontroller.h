@@ -27,7 +27,7 @@ public:
 signals:
     void contactsFilter(const QString& filter);
     void contactsUpdate(const QJsonArray& contacts);
-    void contactDetails(const QString& user);
+    void contactDetails(const QString& id);
 
 public slots:
     void contactsDownload();

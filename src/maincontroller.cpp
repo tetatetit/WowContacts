@@ -115,11 +115,11 @@ void MainController::contactsFiltered(const QSqlQuery& q)
 
 void MainController::contactDetailsShow(const QModelIndex& contactModelIndex)
 {
-    auto user = m_contactModel.getUser(contactModelIndex);
-    if(user.isEmpty()) {
+    auto id = m_contactModel.getId(contactModelIndex);
+    if(id.isEmpty()) {
         return;
     }
-    emit contactDetails(m_contactModel.getUser(contactModelIndex));
+    emit contactDetails(m_contactModel.getId(contactModelIndex));
 }
 
 void MainController::contactDetailsReady(const ContactDetails& d)
