@@ -29,7 +29,6 @@ input.":
 
 ### Their answers to my clarification questions
 
-1.
 1.1 contacts already loaded will not be "unloaded" for the entire lifetime of the app so I'd say that option 1.2 is acceptable.
 
 1.2 is acceptable, and so 2.2 but if you want to implement 3 it's absolutely fine too. You choose what you want to implement, that's why you have to estimate.
@@ -41,9 +40,6 @@ input.":
 4.3. yes, multiple search terms should be used with the semantic of operation AND, meaning, if we have 2 users "John Smith" and "James Smith" and we input "John Smith" as search term then only "John Smith" should be returned not both. If we use "Smith J" both should be displayed, if we continue and add 'o' and search term becomes "Smith Jo" then only "John Smith" must be displayed.
 
 As said before, it's perfectly fine to implement with sqlite if you wish, just take into account when you estimate.
-
-As said before, it's perfectly fine to implement with sqlite if you wish, just take into account when you estimate.
-
 
 ### My cover notes
 
