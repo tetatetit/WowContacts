@@ -78,7 +78,7 @@ MainController::~MainController()
 void MainController::contactsDownload()
 {
     m_mainUI.statusBar->showMessage(tr("Sending request to download ..."));
-    m_netMgr.get(QNetworkRequest(QUrl("https://file.wowapp.me/owncloud/index.php/s/sGOXibS0ZSspQE8/download")));
+    m_netMgr.get(QNetworkRequest(QUrl("https://raw.githubusercontent.com/tetatetit/WowContacts/master/roster.json")));
 }
 
 void MainController::contactsDownloading(QNetworkReply* pReply)
