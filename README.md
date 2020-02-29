@@ -41,7 +41,7 @@ input.":
 
 As said before, it's perfectly fine to implement with sqlite if you wish, just take into account when you estimate.
 
-### My cover notes
+## My cover notes
 
 Here my cover notes I provided to them together with implemented task
 
@@ -78,7 +78,7 @@ Please feel free to request any improvements in any direction to see my approach
 
 
 
-### Their feedback on implemented task
+## Their feedback on implemented task
 
 Very over-enigeered solution, that actually implemented the Least from our test task. Code is too hard to follow, used lots of un-needed threads, sqlite, while not having finished with direct tasks. Overcomplicated multithreading in Qt and C++ is very dangerous, since it may lead to very subtle bugs. Qt Concurrent module that is most optimal for these kinds of tasks was not used. Also “Search/Filter” is broken, e.g. users cannot search “mid-word” that is provided by Qt out of the box. No UI to display contact Avatar and additional info.
 
@@ -155,19 +155,6 @@ Serhiy Berezin  8:15 PM
 > наприклад Alex Bannyk не знайдеться якщо шукати "lex"
 
 Оце вже по котрому колу пішло? Ще раз процитувати те що мені на мої уточнюючі запитання перед початком роботи відповіли? Що ВОНО І НЕ МАЄ ШУКАТИ з середини а ЛИШЕ З ПОЧАТКУ. Так до речі Контакти гугловські працюють на мобільних пристроях і в вебі - можете протестити. Але схоже гуглу і його розробникам далеко до вимог ревюверів ....
-
-Serhiy Berezin  8:16 PM
-Отже чим далі в ліс - тим більш неадекватні відповіді і тим більше мені здається що ви явно хлопці щось мутите і людям голови морочите. Тому тут не обійтись без виведення на чисту воду з публікацією всього цього що я планував і ще переписку нашу для хохми, в тому числі на лінкид запостити
-
-Alex Bannyk (Simply Recruiter)  8:18 PM
-Делай что считаешь нужным
-
-Serhiy Berezin  8:21 PM
-и NDA никако мы не подписывали и даже усно я не давал согласия на нерозглашения. Потому совесть у меня чиста в этом плане.
-
-Alex Bannyk (Simply Recruiter)  8:24 PM
-Желаю найти проект соответствующий всем ожиданиям
-
 
 
 
