@@ -1,7 +1,7 @@
 
 # Test project/task for [WowApp](https://www.wowapp.com/)
 
-This is test project/task I have implemented for [WowApp](https://www.wowapp.com/) company by [`./c++ wowapp-task.pdf`](./c++%20wowapp-task.pdf) tech spec and expectations they provided while applied for remote contractor role for them. My initial estimate for this task was 10 hours but while started to implement - have seend that I have underestimated so it have taken ~20 hours for me. 
+This is test project/task I have implemented for [WowApp](https://www.wowapp.com/) company by [`./c++ wowapp-task.pdf`](./c++%20wowapp-task.pdf) tech spec and expectations they provided while applied for remote contractor role for them. My initial estimate for this task was 10 hours but while started to implement - have seen that I have underestimated so it have taken ~20 hours for me. 
 
 I have contacted just by Ukrainian recruiter who said that acts on behalf of that company and searching Senior Qt Developer for WowApp project and proposed very attractive conditions but first stage was to implement test task. I decided to risk and started that task since it really appeared very interested for me just to refresh my knowledges/skills with Qt since I worked lot with it earlier and would be interesting in some new contracts on Qt projects.
 
