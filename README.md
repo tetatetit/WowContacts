@@ -30,7 +30,7 @@ input.":
     
         > and so 2.2
       
-3. Another golden mean by all aspects of performance (CPU, disk, RAM and overall user expirience by speed etc) for both 1 and 2 would be to use sqlite with Qt plugin which would allow to keep in memory the only portion of contacts and even the only portion of their data required to scroll/display in particular moment without necessity of any cache, even for search indexing as well. While this would simplificate the task a lot in this way.
+3. Another golden mean by all aspects of performance (CPU, disk, RAM and overall user expirience by speed etc) for both 1 and 2 would be to use **sqlite** with Qt plugin which would allow to keep in memory the only portion of contacts and even the only portion of their data required to scroll/display in particular moment without necessity of any cache, even for search indexing as well. While this would simplificate the task a lot in this way.
 
     > #### but if you want to implement 3 it's absolutely fine too.
     > You choose what you want to implement, that's why you have to estimate.
@@ -41,9 +41,9 @@ input.":
 
         > Search is enough for FirstName, LastName and username so that if we have a user "John Smith" having username "jsmith" we can search by either "John", "Smith" or "jsmith" and it should find this contact in all cases.
       
-    * 4.2. Is it expected to look only from the beginning of word or from the any part of it?  E.g. when suppose first name is Serhiy and last name Berezin, then typing  only "erh" or "ere" would display that contact. I checked how standard (build in) Android Contacts app behaves in this and found it's does not display mentioned contact in this case but only when to start type first or last name from the beginning. Personally me as Android Contacts app user - I truly lack that my input is not looked in the middle of contact fields. But as for developer, in case if 3 above (sqlite) is not acceptable. then it requires either additional work (on caching in case of 1.1) or would degrade some performance (in case of 1.2).
+    * 4.2. Is it expected to look only from the beginning of word or from the any part of it?  E.g. when suppose first name is Serhiy and last name Berezin, then typing  only "erh" or "ere" would display that contact. I checked how standard (build in) Android Contacts app behaves in this and found it's does not display mentioned contact in this case but only when to start type first or last name from the beginning. Personally me as Android Contacts app user - I truly lack that my input is not looked in the **middle of contact fields**. But as for developer, in case if 3 above (sqlite) is not acceptable. then it requires either additional work (on caching in case of 1.1) or would degrade some performance (in case of 1.2).
 
-         > #### we don't need to search in the middle of the word.
+         > #### we don't need to search in the **middle of the word**.
          > Beginning is enough. 'mith' used as search term should not return "Smith", but 'Smi' or 'Jo' or 'js' should.
     
     * 4.3. Is it expected to handle multiple worlds in typed filter string or just one? In case of multiple it could look for each word matching each field as defined in 4.1 for matching as defined in 4.2. This how android Contacts app behaves. I understand that without multiple - filtering would be incomplete for real world usage but just checking requirement whether requirement for test task are lower. Since it also might decrease time of test task completion.
@@ -52,12 +52,12 @@ input.":
     
     * 4.4. And for 4 here again solution 3 (sqlite) would be golden mean since would handle most of above job on itself. I.e. for for querying by any fields from either beginning or the middle etc)
         > As said before,
-        > #### it's perfectly fine to implement with sqlite
+        > #### it's perfectly fine to implement with **sqlite**
         > if you wish, just take into account when you estimate.
     
 ## Their feedback on implemented task
 
-Very over-enigeered solution, that actually implemented the Least from our test task. Code is too hard to follow, used lots of un-needed threads, sqlite, while not having finished with direct tasks. Overcomplicated multithreading in Qt and C++ is very dangerous, since it may lead to very subtle bugs. Qt Concurrent module that is most optimal for these kinds of tasks was not used. Also “Search/Filter” is broken, e.g. users cannot search “mid-word” that is provided by Qt out of the box. No UI to display contact Avatar and additional info.
+Very over-enigeered solution, that actually implemented the Least from our test task. Code is too hard to follow, used lots of un-needed threads, **sqlite**, while not having finished with direct tasks. Overcomplicated multithreading in Qt and C++ is very dangerous, since it may lead to very subtle bugs. Qt Concurrent module that is most optimal for these kinds of tasks was not used. Also “Search/Filter” is broken, e.g. users cannot search **“mid-word”** that is provided by Qt out of the box. No UI to display contact Avatar and additional info.
 
 ### And another in Ukrainian same day later
 
@@ -79,7 +79,7 @@ What not finished? Looks like viewed some not up to date code
 
 Examples in the code or overall?
 
-> used lots of un-needed threads
+> used lots of un-needed threads,
 
 Where "lots"  while only 2 other then main GUI:
  1. Storage which fulfills all storage queries (search/filter/sort, update)
@@ -87,7 +87,12 @@ Where "lots"  while only 2 other then main GUI:
 
  Where "un-needed"  while both above operations could lag in case of running in GUI thread and huge amount of contacts and/or slow/loaded CPU/IO (disk/network)?
 
- > sqlite
+ > **sqlite**
+ 
+Just quoting and referencing their answers on my clarification questions
+* > [3 (but if you want to implement 3 its absolutely fine too)](#but-if-you-want-to-implement-3-its-absolutely-fine-too)
+* > [4.4 (its perfectly fine to implement with sqlite)](#its-perfectly-fine-to-implement-with-sqlite)  
+ 
  
 > Overcomplicated multithreading in Qt and C++ is very dangerous
 
