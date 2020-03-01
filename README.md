@@ -5,7 +5,7 @@ This is test project/task I have implemented for [WowApp](https://www.wowapp.com
 
 I have contacted just by Ukrainian recruiter who said that acts on behalf of that company and searching Senior Qt Developer for WowApp project and proposed very attractive conditions but first stage was to implement test task. I decided to risk and started that task since it really appeared very interested for me just to refresh my knowledges/skills with Qt since I worked lot with it earlier and would be interesting in some new contracts on Qt projects.
 
-I have not signed any NDA with recruiter who contacted me (so even started to doubt he really acted on behalf of that company) as well as not gave any other agreement on non-disclosure in neither verbal nor written nor any other form. So I don't see any legal/moral/ethic reason/restriction to do not publish this task and everything about this srory. But rather I would highly appreciate any feedback in issues section of this repo (any critism to my solution or amy confirmation that reviewers of my task was correct in something)
+I have not signed any NDA with recruiter who contacted me (so even started to doubt he really acted on behalf of that company) as well as not gave any other agreement on non-disclosure in neither verbal nor written nor any other form. So I don't see any legal/moral/ethic reason/restriction to do not publish this task and everything about this srory. **While I would highly appreciate any feedback in issues section of this repo (any critism to my solution or amy confirmation that reviewers of my task was correct in something)**
 
 ## My clarififcation questions and their answers (before start)
 
