@@ -89,7 +89,7 @@ Where "lots"  while only 2 other then main GUI:
 
  > **sqlite**
  
-Just quoting and referencing their answers on my clarification questions
+No comments, just quoting and referencing their answers above on my clarification questions
 * > [3 (but if you want to implement 3 its absolutely fine too)](#but-if-you-want-to-implement-3-its-absolutely-fine-too)
 * > [4.4 (its perfectly fine to implement with sqlite)](#its-perfectly-fine-to-implement-with-sqlite)  
  
@@ -110,6 +110,10 @@ Any authoriative background/reference why it is "most optimal" for any similar p
 > Also “Search/Filter” is broken, e.g. users cannot search “mid-word” that is provided by Qt out of the box
 
 > users cannot search “mid-word”
+
+No comments, just quoting and referencing their answer above on my clarification questions
+
+> [4.2 (we dont need to search in the middle of the word)](#we-dont-need-to-search-in-the-middle-of-the-word)
 
 > Also “Search/Filter” ... that is provided by Qt out of the box
 
